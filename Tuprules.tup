@@ -1,0 +1,29 @@
+CFLAGS = @(CFLAGS)
+LFLAGS = @(LFLAGS)
+
+#CFLAGS += -Wall
+#CFLAGS += -Wextra
+CFLAGS += -I.
+CFLAGS += -I..
+CFLAGS += -O2
+CFLAGS += -DHAVE_CONFIG_H
+CFLAGS += -g
+CFLAGS += -fPIC
+CFLAGS += -DPIC
+CFLAGS += -D_POSIX_C_SOURCE=2001111L
+CFLAGS += -D_XOPEN_SOURCE=600
+
+LFLAGS += -shared
+
+ifdef CC
+	CC = @(CC)
+else
+	CC = cc
+endif
+
+ifneq ($(CC),tcc)
+	CFLAGS += -std=c99
+endif
+
+!cc = |> $(CC) $(CFLAGS) -c %f -o %o |> %B.o
+!ld = |> $(CC) $(LFLAGS) %f -o %o |>

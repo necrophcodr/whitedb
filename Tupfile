@@ -1,0 +1,18 @@
+include_rules
+
+# Create GCC-specific config.h file
+: config-gcc.h |> cp %f %o |> config.h
+
+# Create YAJL
+: foreach json/*.c | json/*.h |> !cc |> {json}
+: {json} |> ar rcu %o %f |> libyajl.a
+
+# Create lwgdb.{so,a}
+: foreach Db/*.c | config.h Db/*.h json/*.h |> !cc |> {Db}
+: {json} {Db} |> ar rcu %o %f |> libwgdb.a
+: {Db} libyajl.a |> !ld |> libwgdb.so
+
+# Create Main applications
+: foreach Main/*.c | config.h libwgdb.a libyajl.a Db/*.h |> $(CC) $(CFLAGS) %f -o %o libwgdb.a libyajl.a -lm -pthread |> %B
+
+
