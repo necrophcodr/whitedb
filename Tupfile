@@ -4,7 +4,7 @@ include_rules
 : config-gcc.h |> cp %f %o |> config.h
 
 # Create amalgamation
-: unite.sh | Db/*.c Db/*.h json/*.h json/*.c config.h |> sh unite.sh |> whitedb.c whitedb.h
+: unite.sh | Db/*.c Db/*.h json/*.h json/*.c config.h |> sh unite.sh |> whitedb.c whitedb.h {amal}
 : whitedb.c | whitedb.h |> !cc |> {wgdb}
 : {wgdb} |> ar rcu %o %f |> libwgdb.a
 
@@ -20,6 +20,11 @@ include_rules
 # Create Main applications
 : foreach Main/*.c | config.h libwgdb.so libyajl.so Db/*.h |> $(CC) $(CFLAGS) $(LFLAGS) -L. %f -o %o -lyajl -lwgdb -lm -pthread |> %B
 : foreach Main/*.c | config.h libwgdb.a libyajl.a Db/*.h |> $(CC) $(CFLAGS) %f -o %o libyajl.a libwgdb.a -lm -pthread |> %B.static
+
+# Create Server
+# NOTE: This does not actually work yet, but is a preparation of work to come.
+# : foreach Server/*.c | {amal} |> $(CC) $(CFLAGS) -DUSE_OPENSSL -c %f -o %o |> server.%B.o {server}
+# : {server} {json} libwgdb.a |> !ld |> dserve
 
 
 
