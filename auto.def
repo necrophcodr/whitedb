@@ -1,0 +1,37 @@
+use cc
+use cc-shared
+
+options {
+	python=0 => "Enable Python bindings"
+	raptor=0 => "Compile with Raptor RDF library"
+	log=1 => "Disable DBlog module (memory only)"
+	logdir:=/tmp => "DBlog directory"
+}
+
+define PACKAGE "whitedb"
+define PACKAGE_BUGREPORT ""
+define PACKAGE_NAME "WhiteDB"
+define PACKAGE_STRING "WhiteDB 0.7-alpha"
+define PACKAGE_TARNAME "whitedb"
+define PACKAGE_VERSION "0.7-alpha"
+
+define VERSION "0.7-alpha"
+define VERSION_MAJOR "0"
+define VERSION_MINOR "7"
+define VERSION_REV "0"
+
+define DBLOG_DIR "[opt-val logdir]"
+define CHECK 1
+define LOCK_PROTO 1
+
+cc-check-tools cc ar ranlib strip
+cc-check-function-in-lib round m
+cc-check-function-in-lib pthread_create pthread
+cc-check-includes pthread.h
+
+cc-check-progs bison lex
+
+
+make-template Makefile.in Makefile
+make-template tup.config.in bld/tup.config
+make-config-header config.h -auto {DBLOG_DIR PACKAGE PACKAGE_* VERSION HAVE_* USE_*} -bare {CHECK LOCK_PROTO VERSION_* SIZEOF*}

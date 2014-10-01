@@ -1,8 +1,5 @@
 include_rules
 
-# Create GCC-specific config.h file
-: config-gcc.h |> cp %f %o |> config.h
-
 # Create amalgamation
 : unite.sh | Db/*.c Db/*.h json/*.h json/*.c config.h |> sh unite.sh |> whitedb.c whitedb.h {amal}
 : whitedb.c | whitedb.h |> !cc |> {wgdb}

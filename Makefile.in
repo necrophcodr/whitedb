@@ -1,3 +1,8 @@
+ifeq ($(findstring clean,$(MAKECMDGOALS)),)
+Makefile: @AUTODEPS@ @srcdir@/Makefile.in
+	@AUTOREMAKE@
+endif
+
 all: .tup
 	@# Tup handles the building of all files, and the processing too.
 	@# For information on this, please consider reading the tup manual,
@@ -11,6 +16,9 @@ bld/tup.config:
 
 .tup: bld/tup.config
 	@tup init
+
+reconfig:
+	@AUTOREMAKE@
 
 clean: 
 	rm -rf .tup bld
